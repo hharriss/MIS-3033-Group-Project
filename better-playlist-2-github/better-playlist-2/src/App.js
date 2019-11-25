@@ -9,31 +9,31 @@ let defaultstyle = {
 let fakeserverdata = 
 {
 user:{
-name: 'Harris updates',
+name: 'Kennedy and Harris',
 playlists: [
   {
     name: 'My favorites',
-    songs: [{name: 'Beat It', duration: 1354}, 
-    {name: 'Border Line', duration: 1555}, 
-    {name: 'Paper Planes', duration: 2000}]
+    songs: [{name: 'Beat It', duration: 135}, 
+    {name: 'Border Line', duration: 155}, 
+    {name: 'Paper Planes', duration: 200}]
   },
   {
     name: 'SBC Gang',
-    songs: [{name: 'Western Union', duration : 1444}, 
-    {name: '5th element', duration : 1000}, 
-    {name: 'Oreo Milkshake', duration : 1200}]
+    songs: [{name: 'Western Union', duration : 144}, 
+    {name: '5th element', duration : 100}, 
+    {name: 'Oreo Milkshake', duration : 120}]
   },
   {
     name:'Country yee yee',
-    songs: [{name: 'Big Iron', duration : 2000}, 
-    {name: 'Sweet Revenge', duration: 1344},
-    {name: 'Redneck Shit', duration : 1333}]
+    songs: [{name: 'Big Iron', duration : 200}, 
+    {name: 'Sweet Revenge', duration: 134},
+    {name: 'Redneck Shit', duration : 133}]
   },
   {
     name: 'You like jazz?',
-    songs: [{name: 'Keep On', duration: 1444},
-     {name: 'Street Fighter Mas', duration: 3000}, 
-     {name: 'The Afterlife', duration: 1344}]
+    songs: [{name: 'Keep On', duration: 144},
+     {name: 'Street Fighter Mas', duration: 300}, 
+     {name: 'The Afterlife', duration: 134}]
   }
 ]
 }
@@ -62,7 +62,7 @@ class HoursCounter extends Component{
     return (
 
 <div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
-    <h2 style = {{color: '#ffffff'}}>{Math.round(TotalDuration/60)} Hours</h2>
+    <h2 style = {{color: '#ffffff'}}>{Math.round(TotalDuration/60)} Minutes</h2>
 </div>
 
     );
@@ -73,7 +73,9 @@ render(){
   return(
 <div style={{color: 'white', fontSize:'20px', display: 'center'}}>
   <img/>
-  <input type = "text"/>
+  
+  <input type = "text" onKeyUp={event =>
+     this.props.onTextChange(event.target.value)}/>
   Filter
 </div>
   );
@@ -84,8 +86,12 @@ class Playlist extends Component{
     return (
 <div style= {{color: 'white', display: 'inline-block', width: "150px", fontSize:"200%"}}>
   <img />
-  <h3> Playlist Name </h3>
-  <ul><li>Song 1</li> <li>Song 2</li> <li>Song 3</li></ul>
+  <h3> {this.props.playlist.name}</h3>
+  <ul>
+    {this.props.playlist.songs.map( song => 
+    <li>{song.name}</li>
+    )}
+    </ul>
 </div>
     );
   }
@@ -93,28 +99,37 @@ class Playlist extends Component{
 class App extends Component {
   constructor(){
     super();
-    this.state = {ServerData: {}}
+    this.state = {
+      ServerData: {},
+    filterString: ''
+    }
   }
   componentDidMount(){
     setTimeout(() => {
       this.setState({ServerData: fakeserverdata});
     }, 1000);
+
   
   }
-  render() { 
+  render() {
+    let playliststorender = this.state.ServerData.user ? this.state.ServerData.user.playlists
+    .filter(playlist =>
+      playlist.name.toLowerCase().includes(
+        this.state.filterString.toLowerCase())
+      ) :[]
   return (
    <div className="App">
      {this.state.ServerData.user ?
      <div>
        <h1>  {this.state.ServerData.user.name}'s Spotify Project </h1>
-       <PlaylistCounter playlists={this.state.ServerData.user.playlists}/>
-       <HoursCounter playlists={this.state.ServerData.user.playlists}/>
-       <Filter/>
-       <Playlist/>
-       <Playlist/>
-       <Playlist/>
-       <Playlist/>
-    </div> : <h1 style={{...defaultstyle,}}>'Loading...' </h1> 
+       <PlaylistCounter playlists={playliststorender}/>
+       <HoursCounter playlists={playliststorender}/>
+       <Filter onTextChange={text => 
+        this.setState({filterString: text})}/>
+       {playliststorender.map(playlist =>
+        <Playlist playlist={playlist} />
+        )}
+    </div> : <h1 style={{...defaultstyle,}}>'Loading....' </h1> 
     }
     </div>
 
