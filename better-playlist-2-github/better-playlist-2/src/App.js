@@ -10,7 +10,7 @@ let fakeserverdata =
 {
 user:{
 
-name: 'Kennedy and Harris this should show up in heroku branch',
+name: 'Kennedy and Harris',
 
 playlists: [
   {
