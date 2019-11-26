@@ -9,7 +9,9 @@ let defaultstyle = {
 let fakeserverdata = 
 {
 user:{
+
 name: 'Kennedy and Harris another test',
+
 playlists: [
   {
     name: 'My favorites',
