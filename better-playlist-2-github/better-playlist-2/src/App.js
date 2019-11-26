@@ -1,6 +1,8 @@
+
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
+import queryString from 'query-string';
 
 let defaulttextcolor = '#fff';
 let defaultstyle = {
@@ -107,12 +109,13 @@ class App extends Component {
     }
   }
   componentDidMount(){
-    setTimeout(() => {
-      this.setState({ServerData: fakeserverdata});
-    }, 1000);
+    let parsed = queryString.parse(window.location.search);
+    let accessToken = parsed.access_token;
 
-  
+    fetch('https://api.spotify.com/v1/me', {
+      headers: { 'Authorization': 'Bearer ' + accessToken}})
   }
+
   render() {
     let playliststorender = this.state.ServerData.user ? this.state.ServerData.user.playlists
     .filter(playlist =>
@@ -131,7 +134,8 @@ class App extends Component {
        {playliststorender.map(playlist =>
         <Playlist playlist={playlist} />
         )}
-    </div> : <h1 style={{...defaultstyle,}}>'Loading....' </h1> 
+    </div> : <button onClick={() =>window.location='http://localhost:8888/login'}
+    style={{padding: '20px', 'fontSize': '50px', 'maring-top': '20px'}}>'Sign in with Spotify' </button> 
     }
     </div>
 
