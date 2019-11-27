@@ -23,9 +23,14 @@
 h1
 {
   font-size: 54px;
-  color: white;
+  color:white;
 }
 .body-style
 {
   background: linear-gradient(to bottom, #ffffff 0%, #38c25d 92%);
+}
+body
+{
+  background-color: slateblue;
+  padding: 25px;
 }
