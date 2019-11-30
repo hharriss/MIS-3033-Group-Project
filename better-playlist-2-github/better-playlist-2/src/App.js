@@ -48,7 +48,7 @@ class PlaylistCounter extends Component{
     return (
 
 <div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
-    <h2 style = {{color: '#ffffff'}}>{this.props.playlists.length} Playlist</h2>
+    <h2 style = {{color: '#ffffff'}}>{this.props.playlists.length} Playlist(s)</h2>
 </div>
 
     );
@@ -72,6 +72,113 @@ class HoursCounter extends Component{
     );
   }
 }
+class Explicitcounter extends Component{
+  render() {
+    let AllSongs= this.props.playlists.reduce((songs, eachplaylist) => {
+      return songs.concat(eachplaylist.songs) ///this gets all songs in one list
+     } , [])
+      
+    let Totalexplicit= AllSongs.reduce((sum, eachsong) => {
+      return sum+ eachsong.explicit
+    }, 0)
+    return (
+
+<div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
+    <h2 style = {{color: '#ffffff'}}>{Totalexplicit} Explicit songs</h2>
+</div>
+
+    );
+  }
+}
+class Songcounter extends Component{
+  render() {
+    let AllSongs= this.props.playlists.reduce((songs, eachplaylist) => {
+      return songs.concat(eachplaylist.songs) ///this gets all songs in one list
+     } , [])
+      
+    let Totalexplicit= AllSongs.map((sum, eachsong) => {
+      return sum+ eachsong.name
+    }, 0)
+    return (
+
+<div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
+    <h2 style = {{color: '#ffffff'}}>{Totalexplicit.length} Explicit songs</h2>
+</div>
+    );
+  }
+}
+class ExplicitRatio extends Component{
+  render() {
+    let AllSongs= this.props.playlists.reduce((songs, eachplaylist) => {
+      return songs.concat(eachplaylist.songs) ///this gets all songs in one list
+     } , [])
+      
+     let Totalsongs= AllSongs.map((sum, eachsong) => {
+      return sum+ eachsong.name
+    }, 0)
+    let Totalexplicit= AllSongs.reduce((sum, eachsong) => {
+      return sum+ eachsong.explicit
+    }, 0)
+    let expliciratio = Math.round((Totalexplicit / Totalsongs.length) * 100)
+    if(expliciratio ==0)
+    {
+      return(
+        <div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
+    <h2 style = {{color: '#ffffff'}}>{ Math.round((Totalexplicit / Totalsongs.length) * 100)}% of the music is explict</h2>
+    <h2 style = {{color: '#0F6C00'}}>Your music is squeaky clean :D</h2></div>
+      );
+    }
+    else if (expliciratio <= 19 )
+    {
+      return(
+<div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
+    <h2 style = {{color: '#ffffff'}}>{ Math.round((Totalexplicit / Totalsongs.length) * 100)}% of the music is explict</h2>
+    <h2 style = {{color: '#4AEC30'}}>Everybody has a little sin in them :)</h2>
+</div>
+      );
+    }
+    else if (expliciratio <=49)
+    {
+      return(
+        <div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
+        <h2 style = {{color: '#ffffff'}}>{ Math.round((Totalexplicit / Totalsongs.length) * 100)}% of the music is explict</h2>
+        <h2 style = {{color: '#E9FF10'}}>Let's keep it PG-13 now...</h2>
+    </div>    
+      );
+    }
+    else if (expliciratio <=79)
+    {
+      return(
+        <div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
+        <h2 style = {{color: '#ffffff'}}>{ Math.round((Totalexplicit / Totalsongs.length) * 100)}% of the music is explict</h2>
+        <h2 style = {{color: '#F0920B'}}>It's just a phase, mom</h2>
+    </div>    
+      );
+    }
+    else if(expliciratio <= 100)
+    {
+      return(
+<div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
+    <h2 style = {{color: '#ffffff'}}>{ Math.round((Totalexplicit / Totalsongs.length) * 100)}% of the music is explict</h2>
+    <h2 style = {{color: '#F00B0B'}}>You need Jesus</h2>
+</div>
+      );
+    }
+
+   
+    return (
+
+<div style={{...defaultstyle, width : '40%', display : 'inline-block'}}>
+    <h2 style = {{color: '#ffffff'}}>{ Math.round((Totalexplicit / Totalsongs.length) * 100)}% of the music is explict</h2>
+    <h2 style = {{color: '#F00B0B'}}>You need Jesus</h2>
+</div>
+
+    );
+    
+  }
+}
+
+
 class Filter extends Component{
 render(){
   return(
@@ -92,11 +199,11 @@ class Playlist extends Component{
 <div style= {{color: 'white', display: 'inline-block', width: "150px", fontSize:"100%"}}>
   <img src={playlist.imageUrl} style={{width:'60px'}}/>
   <h3> {playlist.name}</h3>
-  <ul>
+  {/* <ul>
     {playlist.songs.map( song => 
     <li>{song.name}</li>
     )}
-    </ul>
+    </ul> */}
 </div>
     );
   }
@@ -141,11 +248,15 @@ class App extends Component {
       let playlistsPromise = allTracksDataPromises.then(trackDatas => {
         trackDatas.forEach((trackData, i) => {
           playlists[i].trackDatas = trackData.items
-            .map(item => item.track)
-            .map(trackData => ({
-              name: trackData.name,
-              duration: trackData.duration_ms / 1000
-            }))
+          .map(item => item.track)
+          .map(trackData => ({
+            name: trackData.name,
+            duration: trackData.duration_ms / 1000,
+            artist: trackData.artists,
+            explicit: trackData.explicit,
+            popular: trackData.popularity
+          }))
+
         })
         return playlists
       })
@@ -153,10 +264,12 @@ class App extends Component {
     })
     .then(playlists => this.setState({
       playlists: playlists.map(item => {
+        console.log(item.trackDatas)
         return {
           name: item.name,
           imageUrl: item.images[0].url, 
-          songs: item.trackDatas.slice(0,3)
+          songs: item.trackDatas
+          // .slice(0,3)
         }
     })
     }))
@@ -175,10 +288,11 @@ class App extends Component {
    <div className="App">
      {this.state.user ?
      <div>
-       <h1>  {this.state.user.name}'s Spotify Project </h1>
+       <h1> Kennedy and Harris Spotify Project </h1>
        <body>
        <PlaylistCounter playlists={playliststorender}/>
        <HoursCounter playlists={playliststorender}/>
+       <ExplicitRatio playlists={playliststorender} />
        <Filter onTextChange={text => 
         this.setState({filterString: text})}/>
        {playliststorender.map(playlist =>
