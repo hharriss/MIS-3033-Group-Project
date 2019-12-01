@@ -54,7 +54,7 @@ class PlaylistCounter extends Component{
     );
   }
 }
-class HoursCounter extends Component{
+class MinutesCounter extends Component{
   render() {
     let AllSongs= this.props.playlists.reduce((songs, eachplaylist) => {
       return songs.concat(eachplaylist.songs) ///this gets all songs in one list
@@ -182,13 +182,14 @@ class ExplicitRatio extends Component{
 class Filter extends Component{
 render(){
   return(
-<div style={{color: 'white', fontSize:'20px', display: 'center'}}>
+<div style={{color: 'white', fontSize:'20px', display: 'center',}}>
   <img/>
   
   <input type = "text" onKeyUp={event =>
      this.props.onTextChange(event.target.value)}/>
   Filter
 </div>
+
   );
 }
 }
@@ -197,8 +198,9 @@ class Playlist extends Component{
     let playlist = this.props.playlist
     return (
 <div style= {{color: 'white', display: 'inline-block', width: "150px", fontSize:"100%"}}>
+<h3> {playlist.name}</h3>
   <img src={playlist.imageUrl} style={{width:'60px'}}/>
-  <h3> {playlist.name}</h3>
+
   {/* <ul>
     {playlist.songs.map( song => 
     <li>{song.name}</li>
@@ -291,7 +293,7 @@ class App extends Component {
        <h1> Kennedy and Harris Spotify Project </h1>
        <body>
        <PlaylistCounter playlists={playliststorender}/>
-       <HoursCounter playlists={playliststorender}/>
+       <MinutesCounter playlists={playliststorender}/>
        <ExplicitRatio playlists={playliststorender} />
        <Filter onTextChange={text => 
         this.setState({filterString: text})}/>
