@@ -34,3 +34,12 @@ body
   background-color: slateblue;
   padding: 25px;
 }
+.filterstyle
+{
+color: white;
+font-size: '30px';
+display: 'center';
+width: "150px" ;
+font-size: "100%" ;
+display: inline-block;
+}
