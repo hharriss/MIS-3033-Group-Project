@@ -301,9 +301,13 @@ class App extends Component {
         <Playlist playlist={playlist} />
         )}
         </body>
-    </div> : <button onClick={() =>window.location='http://localhost:8888/login'}
-    style={{padding: '20px', 'fontSize': '50px', 'maring-top': '20px'}}>'Sign in with Spotify' </button> 
-    }
+        </div> : <button onClick={() => {
+            window.location = window.location.href.includes('localhost') 
+              ? 'http://localhost:8888/login' 
+              : 'https://better-playlists-backend.herokuapp.com/login' }
+          }
+          style={{padding: '20px', 'font-size': '50px', 'margin-top': '20px'}}>Sign in with Spotify</button>
+        }
     </div>
 
   );
